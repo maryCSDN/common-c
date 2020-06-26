@@ -71,7 +71,7 @@ int compare(void *left, void *right)
     time_interval_t *left_date = (time_interval_t *) left;
     time_interval_t *right_data = (time_interval_t *) right;
 
-    LOG_DEBUG("call commpare. left:(%s) ^ right:(%s).", left_date->_begin_time, right_data->_begin_time);
+    LOG_DEBUG("call commpare. left:(%s) - right:(%s).", left_date->_begin_time, right_data->_begin_time);
 
     size_t left_len = strlen(left_date->_begin_time);
     size_t right_len = strlen(right_data->_begin_time);

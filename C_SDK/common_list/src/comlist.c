@@ -256,7 +256,6 @@ void sort_insert(list_t *plist, compare_func_t fcompare)
         {
             if (compare_func(prev->_data, node_dup->_data) <= 0)
             {
-                LOG_DEBUG("compare prev < next.");
                 if (prev == node_dup->_prev)
                 {
                     break;
@@ -274,7 +273,6 @@ void sort_insert(list_t *plist, compare_func_t fcompare)
             }
             else if (prev == plist->_first)
             {
-                LOG_DEBUG("compare prev > next, but prev == first .");
                 // insert_front_node(plist, node_dup);
                 node_dup->_prev->_next = node_dup->_next;
                 node_dup->_next->_prev = node_dup->_prev;
