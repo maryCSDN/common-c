@@ -1,27 +1,23 @@
 /* windows system */
 #ifdef _WIN32
-#ifdef _cplusplus
-extern "C"
-{
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <windows.h>
+#include <fcntl.h>
 #include <time.h>
 
-#include "cmlog.h"
+#include "_cmlogwrap.h"
 
 /* log color */
-#define COLOR_DEFAULT           SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x07)   /* 正常 */
-#define COLOR_INFO              SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x02)   /* 绿色 */
-#define COLOR_WARN              SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x06)   /* 黄色 */
-#define COLOR_ERROR             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x04)   /* 红色 */
-/* log configuration file sub path */
-#define LOG_CONF_SUB_DIR        "cmlog"
-#define LOG_CONF_NAME           "cmlog.conf"
+#define COLOR_DEFAULT               SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x07)   /* 正常 */
+#define COLOR_INFO                  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x02)   /* 绿色 */
+#define COLOR_WARN                  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x06)   /* 黄色 */
+#define COLOR_ERROR                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x04)   /* 红色 */
+/* current user home directory */
+#define USER_HOME_WIN               "USERPROFILE"
 
 
 static const char *g_log_level[LOG_OFF + 1] = {"ON", "DEBUG", "INFO", "WARN", "ERROR", "OFF"};
@@ -76,73 +72,6 @@ void _log_error(const char *time, const char *file, const char *func, int line, 
 }
 
 
-/**
- * 自定义模块的log接口
- * @param module_name       自定义moudule name， 用于控制指定模块的日志结构
- */
-void _log_debug_module(const char *time, const char *file, const char *func, int line, const char *module_name, const char *format, ...)
-{
-    if (module_name == null)
-    {
-        log_warn("The module name is not set.");
-        return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    _clog(module_name, time, LOG_DEBUG, file, func, line, format, args);
-    va_end(args);
-}
-
-void _log_info_module(const char *time, const char *file, const char *func, int line, const char *module_name, const char *format, ...)
-{
-    if (module_name == null)
-    {
-        log_warn("The module name is not set.");
-        return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    COLOR_INFO;
-    _clog(module_name, time, LOG_INFO, file, func, line, format, args);
-    COLOR_DEFAULT;
-    va_end(args);
-}
-
-void _log_warn_module(const char *time, const char *file, const char *func, int line, const char *module_name, const char *format, ...)
-{
-    if (module_name == null)
-    {
-        log_warn("The module name is not set.");
-        return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    COLOR_WARN;
-    _clog(module_name, time, LOG_WARN, file, func, line, format, args);
-    COLOR_DEFAULT;
-    va_end(args);
-}
-
-void _log_error_module(const char *time, const char *file, const char *func, int line, const char *module_name, const char *format, ...)
-{
-    if (module_name == null)
-    {
-        log_warn("The module name is not set.");
-        return;
-    }
-
-    va_list args;
-    va_start(args, format);
-    COLOR_ERROR;
-    _clog(module_name, time, LOG_ERROR, file, func, line, format, args);
-    COLOR_DEFAULT;
-    va_end(args);
-}
-
-
 static void _clog(const char  *module_name, const char *_time, level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args)
 {
     if (!is_enable_module(module_name))
@@ -172,13 +101,43 @@ static void _cvlog(int yyyy, int mm, int dd, const char *time, const char *modul
 }
 
 
-/**
- * 日志系统控制方法
- */
+/* 日志系统控制方法 */
+
 int log_start()
 {
+
+    char conf_path[LOG_DEFAULT_PATH_SIZE] = {0};
+    if (get_config_path(conf_path) == null)
+    {
+        log_error("Cmlog startup failed");
+        return -1;
+    }
+
+    FILE *fp = fopen(conf_path, "r+");
+    if (fp == null)
+    {
+        log_error("open cmlog configuration file failed, path:[%s]", conf_path);
+        return -1;
+    }
+    
+    char line[LOG_CONF_LINE_SIZE] = {0};
+    char key[LOG_CONF_KEY_SIZE] = {0};
+    char value[LOG_CONF_VALUE_SIZE] = {0};
+    while (fgets(line, LOG_CONF_LINE_SIZE, fp) != null)
+    {
+        memset(key, 0, LOG_CONF_KEY_SIZE);
+        memset(value, 0, LOG_CONF_VALUE_SIZE);
+
+        sscanf(line, "%s = %s", key, value);
+        log_info("key:%s | value:%s", key, value);
+
+        memset(line, 0, LOG_CONF_LINE_SIZE);
+    }
+    
+    fclose(fp);
     return 0;
 }
+
 int log_restart()
 {
     return 0;
@@ -192,45 +151,76 @@ int log_status()
     return 0;
 }
 
-/**
- * 日志配置属性 
- */ 
-bool is_enable_module(const char *module_name)
+/* 日志属性 */ 
+char *get_config_path(char *conf_path)
 {
-    return true;
-}
-level_t log_level_module(const char *module_name)
-{
-    return LOG_ON;
-}
-/* 获取配置文件中属性值 */
-char *attribute_value(const char *key)
-{
-    return null;
-}
-/* 获取配置文件路径 */
-char *get_config_path(void)
-{
-    const char *home_profile = "USERPROFILE";
-    char home_path[1024] = {0};
-
-    unsigned int path_size = GetEnvironmentVariable(home_profile, home_path, 1024);
-
-    if (path_size == 0 || path_size > 1024)
+    if (conf_path == null)
     {
-        // 配置文件路径家目录获取失败
-        log_error("Configuration file path is too long. [%d]", GetLastError());
+        log_error("The parameter to get the configuration file path cannot be null (this parameter is the user stores processing results)");
+        return null;
+    }
+
+    char home_path[LOG_DEFAULT_PATH_SIZE] = {0};
+    unsigned int path_size = GetEnvironmentVariable(USER_HOME_WIN, home_path, LOG_DEFAULT_PATH_SIZE);
+    if (path_size == 0 || path_size > LOG_DEFAULT_PATH_SIZE)
+    {
+        // 当前用户家目录获取失败
+        log_error("Configuration file path is too long [%d]", GetLastError());
         return null;
     }
     
     sprintf(home_path, "%s\\%s\\%s", home_path, LOG_CONF_SUB_DIR, LOG_CONF_NAME);
+    int fd = open(home_path, O_RDONLY);
+    if (fd < 0)
+    {
+        log_error("Failed to open configuration file, path:[%s]", home_path);
+        return null;
+    }
+    close(fd);
     
-    printf("#%s\n", home_path);
+    strcpy(conf_path, home_path);
+    return conf_path;
+}
+
+char *get_attr_string(const char *key, bool config)
+{
+    if (key == null || strcmp(key, LOG_EMPTY_STRING) == 0)
+    {
+        log_warn("The keyword argument passed in is empty");
+        return null;
+    }
+
+    if (config)
+    {
+        /* 从配置文件读取属性值 */
+    }
 
     return null;
 }
 
-#ifdef _cplusplus
+int get_attr_int(const char *key, bool config)
+{
+    return 0;
 }
-#endif
+
+bool set_attr_string(const char *key, const char *value)
+{
+    return true;
+}
+
+bool set_attr_int(const char *key, int value)
+{
+    return true;
+}
+
+bool is_enable_module(const char *module_name)
+{
+    return true;
+}
+
+level_t log_level_module(const char *module_name)
+{
+    return LOG_ON;
+}
+
 #endif  
