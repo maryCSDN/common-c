@@ -1,9 +1,11 @@
+#include "cmlist.h"
+
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include "comlist.h"
-#include "comlog.h"
+
+#include "cmlog.h"
 
 #define null	NULL
 
@@ -52,7 +54,7 @@ void destory_list(list_t *plist, void *delete_data)
 
 /*********************************** print ***********************************/ 
 // 显示链表所有节点的data
-void print_list(list_t *plist, print_data_function_t print_func)
+void print_list(list_t *plist, print_func_t printf)
 {
     if (plist == null)
     {
@@ -70,8 +72,8 @@ void print_list(list_t *plist, print_data_function_t print_func)
     int i = 0;
     for (; i < plist->_lenght; i++)
     {
-        print_data_function = print_func;
-        print_data_function(node->_data);
+        print_func = printf;
+        print_func(node->_data);
 
         node = node->_next;
     }
@@ -189,11 +191,57 @@ bool delete_back(list_t *plist, void *delete_data_function)
 }
 
 // 删除第index节点 
-bool delete_index(list_t *plist, void *delete_data_function)
+bool delete_index(list_t *plist, int index, void *delete_data_function)
 {
     return true;
 }
 
+bool delete_node(list_t *plist, list_node_t *pnode)
+{
+    if (plist == null || pnode == null)
+    {
+        LOG_ERROR("delete list node failed, params is null.");
+        return false;
+    }
+
+    list_node_t *tmp = pnode;
+    if (plist->_last == plist->_last && plist->_first == pnode)
+    {
+        LOG_INFO("delete node is list only node.");
+        plist->_first = NULL;
+        plist->_last = NULL;
+    }
+    else if (plist->_first == pnode)
+    {
+        LOG_INFO("delete node is first.");
+        pnode->_next->_prev = pnode->_prev;
+        pnode->_prev->_next = pnode->_next;
+
+        plist->_first = tmp->_next;
+    }
+    else if (plist->_last == pnode)
+    {
+        LOG_INFO("delete node is last.");
+        pnode->_next->_prev = pnode->_prev;
+        pnode->_prev->_next = pnode->_next;
+
+        plist->_last = tmp->_prev;
+    }
+    else if (plist->_lenght > 2)
+    {// need check node is belong to list
+        pnode->_next->_prev = pnode->_prev;
+        pnode->_prev->_next = pnode->_next;
+    }
+    else
+    {
+        LOG_ERROR("delete fialed.");
+        return false;
+    }
+    
+    free(tmp);
+    plist->_lenght--;
+    return true;
+}
 
 /********************************** get ***************************************/
 // 获取第一个节点数据
@@ -214,6 +262,35 @@ void *get_index_data(list_t *plist, int index)
     return null;
 }
 
+// 获取当前节点数据
+list_node_t *get_node_data(list_t *plist, list_node_t *node)
+{
+    return null;
+}
+
+// 获取头节点
+list_node_t *get_front_node(list_t *plist)
+{
+    return null;
+}
+
+// 获取尾节点
+list_node_t *get_back_node(list_t *plist)
+{
+    return null;
+}
+
+// 获取前驱节点
+list_node_t *get_prev_node(list_t *plist, list_node_t *pnode)
+{
+    return null;
+}
+
+// 获取后继节点
+list_node_t *get_next_node(list_t *plist, list_node_t *pnode)
+{
+    return null;
+}
 
 /********************************* sort ***************************************/ 
 void sort_insert(list_t *plist, compare_func_t fcompare)

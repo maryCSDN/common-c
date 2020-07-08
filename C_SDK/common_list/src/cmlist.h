@@ -32,9 +32,9 @@ void destory_list(list_t *plist, void *delete_data);
 
 /*********************************** print ***********************************/ 
 // 显示链表所有节点的data
-typedef void (*print_data_function_t)(void *print_data);
-void (*print_data_function)(void *print_data);
-void print_list(list_t *plist, print_data_function_t print_func);
+typedef void (*print_func_t)(void *print_data);
+void (*print_func)(void *print_data);
+void print_list(list_t *plist, print_func_t print_func);
 
 /*********************************** insert **********************************/
 // 从头部插入一个节点 
@@ -64,8 +64,13 @@ bool delete_front(list_t *plist, void *delete_data_function);
 bool delete_back(list_t *plist, void *delete_data_function);
 
 // 删除第index节点 
-bool delete_index(list_t *plist, void *delete_data_function);
+bool delete_index(list_t *plist, int index, void *delete_data_function);
 
+// 删除此节点
+bool delete_node(list_t *plist, list_node_t *pnode);
+
+// 删除此节点（自定义删除内部data方法）
+// bool delete_node();
 
 /********************************** get ***************************************/
 // 获取第一个节点数据
@@ -76,6 +81,22 @@ void *get_back_data(list_t *plist);
 
 // 获取第index节点数据 
 void *get_index_data(list_t *plist, int index); 
+
+// 获取当前节点数据
+list_node_t *get_node_data(list_t *plist, list_node_t *node);
+
+// 获取头节点
+list_node_t *get_front_node(list_t *plist);
+
+// 获取尾节点
+list_node_t *get_back_node(list_t *plist);
+
+// 获取前驱节点
+list_node_t *get_prev_node(list_t *plist, list_node_t *pnode);
+
+// 获取后继节点
+
+list_node_t *get_next_node(list_t *plist, list_node_t *pnode);
 
 
 /********************************* sort ***************************************/ 

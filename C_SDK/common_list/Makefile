@@ -1,3 +1,4 @@
+CC				= 	gcc
 SRC_PATH 		= 	./src
 TEST_PATH		=	./test
 SRCS	 		+= 	$(wildcard $(SRC_PATH)/*.c)
@@ -12,11 +13,11 @@ CFLAGS  		+= -g -Wall -I$(SRC_PATH)
 build: clean $(BIN) _cl
 
 $(BIN) : $(OBJS)
-	gcc $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 # .c -> .o 的编译规则
 %.o:%.c
-	gcc $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 _cl:
 	rm $(SRC_PATH)/*.o $(TEST_PATH)/*.o -rf
