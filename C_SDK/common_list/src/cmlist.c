@@ -1,11 +1,9 @@
-#include "cmlist.h"
-
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <cmlog.h>
 
-#include "cmlog.h"
+#include "cmlist.h"
 
 #define null	NULL
 

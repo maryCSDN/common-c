@@ -1,6 +1,5 @@
-/* log API */
-#ifndef _LIB_COMMON_LOG_H
-#define _LIB_COMMON_LOG_H
+#ifndef _LIB_CMLOG_H
+#define _LIB_CMLOG_H
 
 #include "_cmlogwrap.h"
 
@@ -13,6 +12,8 @@ void _log_debug(const char *time, const char *file, const char *func, int line, 
 void _log_info(const char *time, const char *file, const char *func, int line, const char *format, ...);
 void _log_warn(const char *time, const char *file, const char *func, int line, const char *format, ...);
 void _log_error(const char *time, const char *file, const char *func, int line, const char *format, ...);
+int log_init(const char *module);
+void log_set_level(level_t level);
 
 /* log 系统调用API */
 int log_server_start();

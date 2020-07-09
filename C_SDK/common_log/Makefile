@@ -1,27 +1,38 @@
 CC				= 	gcc
-SRC_PATH 		= 	./src
-TEST_PATH		=	./test
-SRCS	 		+= 	$(wildcard $(SRC_PATH)/*.c)
-SRCS	 		+= 	$(wildcard $(TEST_PATH)/*.c)
-OBJS 			=	$(SRCS:.c=.o)
-BIN				=	test	#目标文件
+SRC_DIR			=   ./src				
+INCLUDE_DIR 	=	./include
+BIN_DIR			=   ./bin
+LIB_DIR			= 	./lib
+BIN 			= 	$(BIN_DIR)/cmlog
+LIB				=   $(LIB_DIR)/libcmlog.a
+LIB_FILE		= 	$(wildcard $(SRC_DIR)/*.c)
+BIN_FILE	   +=   $(LIB_FILE)
+BIN_FILE	   +=	$(wildcard $(SRC_DIR)/bin/*.c)
+LIB_OBJS_FILE 	=	$(LIB_FILE:.c=.o)
+BIN_OBJS_FILE 	=	$(BIN_FILE:.c=.o)
+
 # -I$(INCLUDE_PATH) 引入自定义的头文件
 # -g：生成调试信息
 # Wall：输出全部的告警信息
-CFLAGS  		+= -g -Wall -I$(SRC_PATH)
+CFLAGS  	   += 	-g -Wall -I$(INCLUDE_DIR)
 
-build: clean $(BIN) _cl
+build:	$(LIB) $(BIN)
 
-$(BIN) : $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+$(LIB): $(LIB_OBJS_FILE)
+	mkdir $(LIB_DIR)
+	ar rc $@ $^
+
+$(BIN): $(BIN_OBJS_FILE)
+	mkdir $(BIN_DIR)
+	$(CC) $(CFLAGS) -o $@ $^ -lwsock32 -static-libgcc
+
 
 # .c -> .o 的编译规则
 %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
-_cl:
-	rm $(SRC_PATH)/*.o $(TEST_PATH)/*.o -rf
+#_cl:
+#	rm $(SRC_DIR)/*.o  $(SRC_DIR)/bin/*.o -rf
 
-clean:
-	rm $(SRC_PATH)/*.o $(TEST_PATH)/*.o \
-	test.exe -rf
+#clean:
+#	rm  $(LIB_DIR) $(BIN_DIR) $(SRC_DIR)/*.o  $(SRC_DIR)/bin/*.o -rf

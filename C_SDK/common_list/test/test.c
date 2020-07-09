@@ -2,10 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <cmlog.h>
 // #define LOG_PRINT   // 打印日志
 #include "cmlist.h"
-#include "cmlog.h"
 #include "test.h"
 
 #define null NULL
@@ -43,7 +42,7 @@ int main()
 #endif
 
 #ifdef _WIN32
-    printf("_win 32\n");
+    log_error("_win 32\n");
 #endif
 
 #ifdef _WINDOWS_
