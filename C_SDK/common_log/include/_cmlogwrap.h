@@ -25,18 +25,6 @@ extern "C"
 #define     LOG_FORMAT                  "[%04d-%02d-%02d %s %s %5s %s:%s:%05d] # %s\n"
 #define     LOG_FORMAT_SIZE             2048
 
-/* log empty string */
-#define     LOG_EMPTY_STRING            ""
-/* log key value size */
-#define     LOG_CONF_KEY_SIZE           64
-#define     LOG_CONF_VALUE_SIZE         128
-#define     LOG_CONF_LINE_SIZE          512
-/* cmlog key */
-#define     KEY_CMLOG_LEVEL             "log-cmlog-level"
-#define     KEY_CMLOG_ROOT_DIR          "log-root-dir"
-#define     KEY_CMLOG_PRINT             "log-print"
-#define     KEY_CMLOG_VALId_TIME        "log-valid-time"
-
 
 typedef enum _log_level_type{LOG_ON = 0, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_OFF} level_t;
 typedef struct _config_info_type{

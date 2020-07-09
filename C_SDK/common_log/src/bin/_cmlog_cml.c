@@ -1,0 +1,6 @@
+#include "_cmlogwrap.h"
+
+int main()
+{
+    return 0;
+}

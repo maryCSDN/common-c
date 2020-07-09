@@ -15,10 +15,4 @@ void _log_error(const char *time, const char *file, const char *func, int line, 
 int log_init(const char *module);
 void log_set_level(level_t level);
 
-/* log 系统调用API */
-int log_server_start();
-int log_server_restart();
-int log_server_stop();
-int log_server_status();
-
 #endif

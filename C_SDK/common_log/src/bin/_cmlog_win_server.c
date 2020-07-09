@@ -5,7 +5,6 @@
 #include <winsock2.h>
 #include <Windows.h>
  
-#pragma comment(lib,"ws2_32.lib")
 #include "_cmlogwrap.h"
 
 /* 1. 检查cmlog是否已经启动 */
