@@ -25,14 +25,7 @@ extern "C"
 #define     LOG_FORMAT                  "[%04d-%02d-%02d %s %s %5s %s:%s:%05d] # %s\n"
 #define     LOG_FORMAT_SIZE             2048
 
-
 typedef enum _log_level_type{LOG_ON = 0, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_OFF} level_t;
-typedef struct _config_info_type{
-    unsigned int _valid_time;                   /* 日志保存时间(天)  key = valid-time, value = [0, n] */
-    char _level[16];                            /* 日志级别  key = "log-"##"module_name"##"-level", value = ON/DEBUG/ERROR/INFO/WARN/ERROR/OFF (OFF-关闭模块log)*/
-    char _print_way[16];                        /* 打印方式 key = "log-"##print， value = unconsole/stdin/stdout/stderr  默认控制台 */
-    char _root_dir[LOG_DEFAULT_PATH_SIZE];      /* 日志文件保存的根目录 key = "log-root-dir", value = ${path} */
-} _log_conf_t;
 
 /* log客户端 API */ 
 #define log_debug(format, args...)  _log_debug(__TIME__, __FILE__, __func__, __LINE__, format, ##args)
@@ -51,7 +44,6 @@ extern int log_server_start();
 extern int log_server_restart();
 extern int log_server_stop();
 extern int log_server_status();
-extern char *log_server_conf_path(char *dest_buf);
 
 #ifdef _cplusplus
 }

@@ -9,7 +9,7 @@ CFLAGS  	   += 	-g -Wall -I$(INCLUDE) -L$(LIB)
 build: clean $(EXE)
 
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ -lcmlog
+	$(CC) $(CFLAGS) -o $@ $^ -lcmlog -lwsock32 -static-libgcc
 # .c -> .o 的编译规则
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@ 

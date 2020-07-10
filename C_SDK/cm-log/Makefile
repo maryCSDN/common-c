@@ -1,8 +1,8 @@
 CC				= 	gcc
 INCLUDE_DIR 	=	./include/
-BIN_SAVE_DIR	=	../cmsdk/bin/
-LIB_SAVE_DIR	=	../cmsdk/lib/
-INC_SAVE_DIR	=	../cmsdk/include/
+BIN_SAVE_DIR	=	../cm-sdk/bin/
+LIB_SAVE_DIR	=	../cm-sdk/lib/
+INC_SAVE_DIR	=	../cm-sdk/include/
 SRCS_LIB		+= 	$(wildcard ./src/*.c)
 SRCS_BIN	   	+=  $(wildcard ./src/*.c ./src/bin/*.c)
 OBJS_LIB 		=	$(SRCS_LIB:.c=.o)
@@ -32,9 +32,5 @@ $(BIN): $(OBJS_BIN)
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
-
-#_cl:
-#	rm $(SRC_DIR)/*.o  $(SRC_DIR)/bin/*.o -rf
-
-#clean:
-#	rm  $(LIB_DIR) $(BIN_DIR) $(SRC_DIR)/*.o  $(SRC_DIR)/bin/*.o -rf
+clean:
+	rm  $(BIN) $(LIB) ./src/*.o  ./src/bin/*.o -f

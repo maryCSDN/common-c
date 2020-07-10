@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <winsock2.h>
 #include <windows.h>
 #include <fcntl.h>
 #include <time.h>
@@ -22,8 +23,11 @@ static const char *g_log_level[LOG_OFF + 1] = {"ON", "DEBUG", "INFO", "WARN", "E
 static char g_module[LOG_MODULE_SIZE] = {0};
 static level_t g_level = LOG_ON;
 static bool g_init_flag = false;
+static SOCKET g_sock;
+static struct sockaddr_in g_log_serv;
 
 static void _cvlog(const char *_time, level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args);
+static bool _log_init_ipc(void);
 
 void _log_debug(const char *time, const char *file, const char *func, int line, const char *format, ...)
 {
@@ -63,6 +67,48 @@ void _log_error(const char *time, const char *file, const char *func, int line, 
     va_end(args);
 }
 
+int log_init(const char *module)
+{
+    if (module == null)
+    {
+        log_warn("log init failed, param module is null");
+        return -1;
+    }
+
+    if (strlen(g_module) > 0)
+    {
+        log_warn("log init failed, already initialized");
+        return -1;
+    }
+
+    if (strlen(module) > LOG_MODULE_SIZE - 1)
+    {
+        log_warn("log init failed, module len too long");
+        return -1;
+    }
+
+    if (!_log_init_ipc())
+    {
+        log_warn("log init failed, ipc init failed");
+        return -1;
+    }
+
+    strcpy(g_module, module);
+    g_init_flag = true;
+    return 0;
+}
+
+void log_set_level(level_t level)
+{
+    if (level > LOG_OFF || level < LOG_ON)
+    {
+        log_warn("The log level you set is illegal");
+    }
+    else
+    {
+        g_level = level;
+    }
+}
 
 static void _cvlog(const char *_time, level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args)
 {
@@ -82,45 +128,32 @@ static void _cvlog(const char *_time, level_t level, const char *_file, const ch
     }
     
     vsprintf(_format, _format, args);
-    printf("%s", _format);
+    if (level >= g_level)
+    {
+        printf("%s", _format);
+    }
+    
+    if (g_init_flag)
+    {
+        sendto(g_sock, _format, strlen(_format), 0, (SOCKADDR*)&g_log_serv, sizeof(SOCKADDR));
+    }
 }
 
-
-int log_init(const char *module)
+static bool _log_init_ipc(void)
 {
-    if (module == null)
+    WSADATA WSAData;
+    if (WSAStartup(MAKEWORD(2, 2), &WSAData) != 0)
     {
-        log_warn("log init failed, param module is null.");
-        return -1;
+        log_warn("log init ipc failed, winsocket error");
+        return false;
     }
+    g_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
-    if (strlen(g_module) > 0)
-    {
-        log_warn("log init failed, already initialized.");
-        return -1;
-    }
+    g_log_serv.sin_family = AF_INET;
+    g_log_serv.sin_port = htons(LOG_SERV_PORT);
+    g_log_serv.sin_addr.S_un.S_addr = inet_addr(LOG_SERV_IP);
 
-    if (strlen(module) > LOG_MODULE_SIZE - 1)
-    {
-        log_warn("log init failed, module len too long");
-        return -1;
-    }
-
-    strcpy(g_module, module);
-    g_init_flag = true;
-    return 0;
-}
-
-void log_set_level(level_t level)
-{
-    if (level > LOG_OFF || level < LOG_ON)
-    {
-        log_warn("The log level you set is illegal");
-    }
-    else
-    {
-        g_level = level;
-    }
+    return true;
 }
 
 #endif  
