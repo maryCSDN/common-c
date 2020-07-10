@@ -7,20 +7,20 @@ SRCS_LIB		+= 	$(wildcard ./src/*.c)
 SRCS_BIN	   	+=  $(wildcard ./src/*.c ./src/bin/*.c)
 OBJS_LIB 		=	$(SRCS_LIB:.c=.o)
 OBJS_BIN 		=	$(SRCS_BIN:.c=.o)
-BIN 			= 	cmlog
-LIB				=   libcmlog.a
+BIN 			= 	./cmlog
+LIB				=   ./libcmlog.a
 
 # -I$(INCLUDE_PATH) 引入自定义的头文件
 # -g：生成调试信息
 # Wall：输出全部的告警信息
 CFLAGS  	   += 	-g -Wall -I$(INCLUDE_DIR)
 
-build:  $(BIN) $(LIB) tosdk
+build:  $(BIN) $(LIB) install
 
-tosdk:
-	cp $(LIB) $(LIB_SAVE_DIR)
-	cp $(BIN) $(BIN_SAVE_DIR)
-	cp $(INCLUDE_DIR)*.h $(INC_SAVE_DIR)	
+install: $(LIB) $(BIN)
+	cp -f $(INCLUDE_DIR)*.h $(INC_SAVE_DIR)
+	cp -f $(LIB)* $(LIB_SAVE_DIR)
+	cp -f $(BIN)* $(BIN_SAVE_DIR)
 
 $(LIB): $(OBJS_LIB)
 	ar rc $@ $^

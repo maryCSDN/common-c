@@ -1,7 +1,8 @@
 /* windows system */
 #ifdef _WIN32
 
-
+#include <stdio.h>
+#include <fcntl.h>
 #include <winsock2.h>
 #include <Windows.h>
  
@@ -33,29 +34,29 @@ int log_server_start()
 	}
  
 	//绑定地址信息
-	sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(PORT);
-	serverAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+	struct sockaddr_in server_addr;
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(LOG_SERV_PORT);
+	server_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
  
-	bind(sock, (sockaddr*)&serverAddr, sizeof(sockaddr));
+	bind(sock, (struct sockaddr*)&server_addr, sizeof(struct sockaddr));
 	
-	char buf[512];
+	char log_cache[LOG_FORMAT_SIZE];
 	while (TRUE)
 	{
-		memset(buf, 0, 512);
+		memset(log_cache, 0, LOG_FORMAT_SIZE);
 		// 网络节点的信息，用来保存客户端的网络信息
-		sockaddr_in clientAddr;
-		memset(&clientAddr, 0, sizeof(sockaddr_in));
+		struct sockaddr_in client_addr;
+		memset(&client_addr, 0, sizeof(struct sockaddr_in));
  
-		int clientAddrLen = sizeof(sockaddr);
+		int client_addr_len = sizeof(struct sockaddr);
 		//接收客户端发来的数据
-		int ret = recvfrom(sock, buf, 512, 0,(sockaddr*) &clientAddr,&clientAddrLen );
-		
-		printf("Recv msg:%s from IP:[%s] Port:[%d]\n", buf,inet_ntoa(clientAddr.sin_addr),ntohs(clientAddr.sin_port));
+		recvfrom(sock, log_cache, LOG_FORMAT_SIZE, 0, (struct sockaddr*) &client_addr,&client_addr_len );
+		printf("%s", log_cache);
+		//printf("Recv msg:%s from IP:[%s] Port:[%d]\n", buf,inet_ntoa(clientAddr.sin_addr),ntohs(clientAddr.sin_port));
 		// 发一个数据包返回给客户
-		sendto(sock, "Hello World!", strlen("Hello World!"), 0, (sockaddr*)&clientAddr, clientAddrLen);
-		printf("Send msg back to IP:[%s] Port:[%d]\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
+		//sendto(sock, "Hello World!", strlen("Hello World!"), 0, (sockaddr*)&clientAddr, clientAddrLen);
+		//printf("Send msg back to IP:[%s] Port:[%d]\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
 	}
 	return 0;
 
@@ -80,7 +81,7 @@ char *log_server_conf_path(char *dest_buf)
     }
 
     char home_path[LOG_DEFAULT_PATH_SIZE] = {0};
-    unsigned int path_size = GetEnvironmentVariable(USER_HOME_WIN, home_path, LOG_DEFAULT_PATH_SIZE);
+    unsigned int path_size = GetEnvironmentVariable(LOG_CONF_HOME_WIN, home_path, LOG_DEFAULT_PATH_SIZE);
     if (path_size == 0 || path_size > LOG_DEFAULT_PATH_SIZE)
     {
         // 当前用户家目录获取失败
@@ -97,8 +98,8 @@ char *log_server_conf_path(char *dest_buf)
     }
     close(fd);
     
-    strcpy(conf_path, home_path);
-    return conf_path;
+    strcpy(dest_buf, home_path);
+    return dest_buf;
 }
 
 #endif
