@@ -4,13 +4,12 @@ LIB				=	../../cm-sdk/lib/
 SRCS			=   $(wildcard ./src/*.c)
 OBJS			=	$(SRCS:.c=.o)
 EXE				= 	test
-CFLAGS  	   	+= 	-g -Wall -I$(INCLUDE) 
-LDFLAGS			+=	-L$(LIB)
+CFLAGS  	   += 	-g -Wall -I$(INCLUDE) -L$(LIB)
 
 build: clean $(EXE)
 
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog
+	$(CC) $(CFLAGS) -o $@ $^ -lcmlist
 # .c -> .o 的编译规则
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@ 

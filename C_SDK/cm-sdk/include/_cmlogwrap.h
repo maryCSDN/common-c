@@ -8,6 +8,17 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <fcntl.h>
+#include <time.h>
+#include <stdbool.h>
+#include <stdio.h>
+    #ifdef _WIN32
+    #include <winsock2.h>
+    #include <windows.h>
+    #endif
 
 /* 服务器地址 */
 #define     LOG_SERV_IP                 "127.0.0.1"

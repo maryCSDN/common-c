@@ -1,16 +1,6 @@
 /* windows system */
 #ifdef _WIN32
 
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <winsock2.h>
-#include <windows.h>
-#include <fcntl.h>
-#include <time.h>
-
 #include "_cmlogwrap.h"
 
 /* log color */

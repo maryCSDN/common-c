@@ -1,27 +1,31 @@
 CC				= 	gcc
-SRC_PATH 		= 	./src
-TEST_PATH		=	./test
-SRCS	 		+= 	$(wildcard $(SRC_PATH)/*.c)
-SRCS	 		+= 	$(wildcard $(TEST_PATH)/*.c)
-OBJS 			=	$(SRCS:.c=.o)
-BIN				=	test	#目标文件
+INCLUDE_DIR 	=	./include/
+BIN_SAVE_DIR	=	../cm-sdk/bin/
+LIB_SAVE_DIR	=	../cm-sdk/lib/
+INC_SAVE_DIR	=	../cm-sdk/include/
+SRCS_LIB		+= 	$(wildcard ./src/*.c)
+SRCS_BIN	   	+=  $(wildcard ./src/*.c ./src/bin/*.c)
+OBJS_LIB 		=	$(SRCS_LIB:.c=.o)
+OBJS_BIN 		=	$(SRCS_BIN:.c=.o)
+LIB				=   ./libcmlist.a
+
 # -I$(INCLUDE_PATH) 引入自定义的头文件
 # -g：生成调试信息
 # Wall：输出全部的告警信息
-CFLAGS  		+= -g -Wall -I$(SRC_PATH)
+CFLAGS  	   += 	-g -Wall -I$(INCLUDE_DIR) -I$(INC_SAVE_DIR) -L$(LIB)
 
-build: clean $(BIN) _cl
+build:  $(LIB) install
 
-$(BIN) : $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+install: $(LIB)
+	cp -f $(INCLUDE_DIR)*.h $(INC_SAVE_DIR)
+	cp -f $(LIB)* $(LIB_SAVE_DIR)
+
+$(LIB): $(OBJS_LIB)
+	ar rc $@ $^ 
 
 # .c -> .o 的编译规则
 %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-_cl:
-	rm $(SRC_PATH)/*.o $(TEST_PATH)/*.o -rf
+	$(CC) $(CFLAGS) -c $< -o $@  -lcmlog -lwsock32 -static-libgcc
 
 clean:
-	rm $(SRC_PATH)/*.o $(TEST_PATH)/*.o \
-	test.exe -rf
+	rm  $(LIB) ./src/*.o   -f

@@ -26,11 +26,11 @@ $(LIB): $(OBJS_LIB)
 	ar rc $@ $^
 
 $(BIN): $(OBJS_BIN)
-	$(CC) $(CFLAGS) -o $@ $^ -lwsock32 -static-libgcc
+	$(CC) $(CFLAGS) -o $@ $^ -lwsock32
 
 # .c -> .o 的编译规则
 %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@ -lwsock32
 
 clean:
 	rm  $(BIN) $(LIB) ./src/*.o  ./src/bin/*.o -f
