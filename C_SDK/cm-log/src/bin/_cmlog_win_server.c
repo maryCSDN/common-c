@@ -32,7 +32,6 @@ int log_server_start(void)
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(LOG_SERV_PORT);
 	server_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
- 
 	bind(sock, (struct sockaddr*)&server_addr, sizeof(struct sockaddr));
 	
 	log_info("log server start.");

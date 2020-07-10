@@ -26,43 +26,43 @@ static bool g_init_flag = false;
 static SOCKET g_sock;
 static struct sockaddr_in g_log_serv;
 
-static void _cvlog(const char *_time, level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args);
+static void _cvlog(level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args);
 static bool _log_init_ipc(void);
 
-void _log_debug(const char *time, const char *file, const char *func, int line, const char *format, ...)
+void _log_debug(const char *file, const char *func, int line, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    _cvlog(time, LOG_DEBUG, file, func, line, format, args);
+    _cvlog(LOG_DEBUG, file, func, line, format, args);
     va_end(args);
 }
 
-void _log_info(const char *time, const char *file, const char *func, int line, const char *format, ...)
+void _log_info(const char *file, const char *func, int line, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
     COLOR_INFO;
-    _cvlog(time, LOG_INFO, file, func, line, format, args);
+    _cvlog(LOG_INFO, file, func, line, format, args);
     COLOR_DEFAULT;
     va_end(args);
 }
 
-void _log_warn(const char *time, const char *file, const char *func, int line, const char *format, ...)
+void _log_warn(const char *file, const char *func, int line, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
     COLOR_WARN;
-    _cvlog(time, LOG_WARN, file, func, line, format, args);
+    _cvlog(LOG_WARN, file, func, line, format, args);
     COLOR_DEFAULT;
     va_end(args);
 }
 
-void _log_error(const char *time, const char *file, const char *func, int line, const char *format, ...)
+void _log_error(const char *file, const char *func, int line, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
     COLOR_ERROR;
-    _cvlog(time, LOG_ERROR, file, func, line, format, args);
+    _cvlog(LOG_ERROR, file, func, line, format, args);
     COLOR_DEFAULT;
     va_end(args);
 }
@@ -110,32 +110,33 @@ void log_set_level(level_t level)
     }
 }
 
-static void _cvlog(const char *_time, level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args)
+static void _cvlog(level_t level, const char *_file, const char *_func, int _line, const char *format, va_list args)
 {
     time_t _date;
     _date = time(&_date);
-    struct tm *date = gmtime(&_date);
+    struct tm *date = localtime(&_date);
     char _format[LOG_FORMAT_SIZE] = {0};
+    char log_msg[LOG_FORMAT_SIZE] = {0};
     if (!g_init_flag)
     {
-        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, _time, 
+        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec, 
             LOG_MODULE_SYSVALUE, g_log_level[level], _file, _func, _line, format);
     }
     else
     {
-        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, _time, 
+        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec, 
             g_module, g_log_level[level], _file, _func, _line, format);
     }
     
-    vsprintf(_format, _format, args);
+    vsprintf(log_msg, _format, args);
     if (level >= g_level)
     {
-        printf("%s", _format);
+        printf("%s", log_msg);
     }
     
     if (g_init_flag)
     {
-        sendto(g_sock, _format, strlen(_format), 0, (SOCKADDR*)&g_log_serv, sizeof(SOCKADDR));
+        sendto(g_sock, log_msg, strlen(log_msg), 0, (SOCKADDR*)&g_log_serv, sizeof(SOCKADDR));
     }
 }
 
