@@ -1,0 +1,10 @@
+├─comple        // 编译后文件
+│  ├─bin        // sever可执行程序
+│  └─lib        // 静态库文件
+├─include       // 外部调用接口定义
+├─src           // 源码
+│  └─include    // 外部接口实现     >>lib src
+|  └─*.c *.h    // server程序实现   >>bin src
+├─test          // 测试
+├─Makefile      // 编译cm_log
+└─readme        // 路径规划详解

@@ -7,6 +7,7 @@
 #include <Windows.h>
  
 #include "_cmlogwrap.h"
+#include "include/_cmlog_win.c"
 
 /* log 系统调用API */
 int log_server_start(void)
