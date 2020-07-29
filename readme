@@ -1,3 +1,3 @@
-├─compiles              // SDk编译后文件 包含子项目include bin lib文件夹
+├─compiles              // SDk编译后生成该目录 包含子项目include bin lib文件夹
 ├─SDK                   // SDK源码
-└─Makefile              // 编译SDK
+└─Makefile              // 编译SDK {build:构建sdk库compiles，undo:撤销编译过程生成的文件}

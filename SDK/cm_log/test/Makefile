@@ -10,10 +10,10 @@ LDFLAGS			+=	-L$(LIB)
 build: clean $(EXE)
 
 $(EXE): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog -lwsock32
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog -lwsock32
 # .c -> .o 的编译规则
 %.o:%.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	@$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:
-	rm $(OBJS) $(EXE)* -f
+	@rm $(OBJS) $(EXE)* -f

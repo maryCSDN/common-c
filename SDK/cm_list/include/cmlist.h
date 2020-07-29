@@ -17,5 +17,8 @@ bool insert_index_back(list_t *plist, int index, data_t *pdata);
 /* print */
 void print_list(list_t *plist, printf_t print_func);
 
+/* check */
+bool is_empty_list(list_t *list);
+
 #endif
 

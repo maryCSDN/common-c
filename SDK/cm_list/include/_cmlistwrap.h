@@ -92,6 +92,10 @@ extern void print_list(list_t *plist, printf_t print_func);
 // int (*compare_function)(void *left, void *right);
 // extern void sort_insert(list_t *plist, comparef_t compare_func);
 
+/********************************* check ***************************************/
+// 无数据节点的空链表
+bool is_empty_list(list_t *list);
+
 #ifdef _cplusplus
 }
 #endif
