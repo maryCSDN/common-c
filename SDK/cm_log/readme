@@ -1,4 +1,4 @@
-├─compile       // 编译后文件
+├─compile       // 编译后文件(内部调用库)
 │  ├─bin        // sever可执行程序
 │  └─lib        // 静态库文件
 ├─include       // 外部调用接口定义

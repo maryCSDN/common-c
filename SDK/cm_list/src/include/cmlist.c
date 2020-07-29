@@ -99,8 +99,7 @@ bool insert_front(list_t *plist, data_t *pdata)
     return true;
 }
 
-// 从尾部插入一个数据节点
-bool insert_back(list_t *plist, void *data)
+bool insert_back(list_t *plist, void *pdata)
 {
     if (plist == NULL || pdata == NULL)
     {

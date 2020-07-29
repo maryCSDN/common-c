@@ -7,7 +7,7 @@ EXE				= 	test
 CFLAGS  	   	+= 	-g -Wall -I$(INCLUDE) 
 LDFLAGS			+=	-L$(LIB)
 
-build: clean $(EXE)
+compile: undo $(EXE)
 
 $(EXE): $(OBJS)
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog -lwsock32
@@ -15,5 +15,5 @@ $(EXE): $(OBJS)
 %.o:%.c
 	@$(CC) $(CFLAGS) -c $< -o $@ 
 
-clean:
+undo:
 	@rm $(OBJS) $(EXE)* -f

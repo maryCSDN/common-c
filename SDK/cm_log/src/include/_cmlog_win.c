@@ -9,7 +9,7 @@
 #define COLOR_WARN                  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x06)   /* 黄色 */
 #define COLOR_ERROR                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x04)   /* 红色 */
 
-static const char *g_log_level[LOG_OFF + 1] = {"ON", "DEBUG", "INFO", "WARN", "ERROR", "OFF"};
+static const char *g_log_level[LOG_OFF + 1] = {"on", "debug", "info", "warn", "error", "off"};
 static char g_module[LOG_MODULE_SIZE] = {0};
 static level_t g_level = LOG_ON;
 static bool g_init_flag = false;
@@ -109,13 +109,13 @@ static void _cvlog(level_t level, const char *_file, const char *_func, int _lin
     char log_msg[LOG_FORMAT_SIZE] = {0};
     if (!g_init_flag)
     {
-        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec, 
-            LOG_MODULE_SYSVALUE, g_log_level[level], _file, _func, _line, format);
+        sprintf(_format, _LOG_FORMAT, LOG_MODULE_SYSVALUE, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
+            date->tm_hour, date->tm_min, date->tm_sec, _file, _func, _line, g_log_level[level], format);
     }
     else
     {
-        sprintf(_format, LOG_FORMAT, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec, 
-            g_module, g_log_level[level], _file, _func, _line, format);
+        sprintf(_format, _LOG_FORMAT, g_module, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
+            date->tm_hour, date->tm_min, date->tm_sec, _file, _func, _line,  g_log_level[level], format);
     }
     
     vsprintf(log_msg, _format, args);

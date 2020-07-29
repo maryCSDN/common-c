@@ -12,7 +12,7 @@ MY_SRCS_LIB          =$(wildcard $(MY_SRCS_DIR)include/*.c)
 MY_OBJS_BIN          =$(MY_SRCS_BIN:.c=.o)
 MY_OBJS_LIB          =$(MY_SRCS_LIB:.c=.o)
 
-#编译定义（build）
+#构建外部库定义（build）
 COMPILE              =../../compiles/cmlog/
 INCLUDE              =$(COMPILE)include/
 LIB                  =$(COMPILE)lib/
@@ -34,12 +34,12 @@ pre:
 	@echo "##start compiling cmlog"
 
 check_dir:
-	mkdir -p $(MY_COMPLE_DIR)
-	mkdir -p $(MY_BIN_DIR)
-	mkdir -p $(MY_LIB_DIR)
+	mkdir -p $(MY_COMPLE_DIR);
+	mkdir -p $(MY_BIN_DIR);
+	mkdir -p $(MY_LIB_DIR);
 
 $(MY_LIB): $(MY_OBJS_LIB)
-	@ar rc $@ $^
+	@ar rcvs $@ $^
 	@echo "##generate cmlog static lib"
 
 $(MY_BIN): $(MY_OBJS_BIN)
@@ -48,7 +48,7 @@ $(MY_BIN): $(MY_OBJS_BIN)
 
 # .c -> .o 的编译规则
 %.o:%.c
-	@$(CC) $(CFLAGS) -c $< -o $@ -lwsock32 
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 #build 由上层Makefile调用，包含编译过程，以及拷贝头文件、静态库到指定目录
 build:compile
@@ -73,5 +73,5 @@ clean_all:clean
 	@rm $(MY_LIB)* $(MY_BIN)* -f
 
 test_clean:
-	@(cd $(MY_TEST_DIR) && $(MAKE) clean) || exit 1
+	@(cd $(MY_TEST_DIR) && $(MAKE) undo) || exit 1
 	
