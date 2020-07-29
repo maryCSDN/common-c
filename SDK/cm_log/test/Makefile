@@ -1,6 +1,6 @@
 CC				= 	gcc
 INCLUDE			=	../include/
-LIB				=	../comple/lib/
+LIB				=	../compile/lib/
 SRCS			=	$(wildcard ./*.c)	
 OBJS			=	$(SRCS:.c=.o)
 EXE				= 	test
@@ -16,4 +16,4 @@ $(EXE): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:
-	rm $(OBJS) $(EXE) -f
+	rm $(OBJS) $(EXE)* -f
