@@ -6,5 +6,5 @@
 │  └─include    // 外部接口实现     >>lib src
 |  └─*.c *.h    // server程序实现   >>bin src
 ├─test          // 测试 （test的编译是独立的，但makefile中必须包含clean方法，用于清除test在编译时期产生的编译文件和目标文件）
-├─Makefile      // 编译cm_log （必须包含build方法，用于代码提交时清除编译时期产生的编译文件和目标文件）
+├─Makefile      // 编译cm_network （必须包含build方法，用于代码提交时清除编译时期产生的编译文件和目标文件）
 └─readme        // 路径规划详解
