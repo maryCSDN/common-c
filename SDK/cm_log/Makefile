@@ -19,15 +19,17 @@ MY_TEST_DIR          =./test/
 # Wall：输出全部的告警信息
 CFLAGS               +=-g -Wall -I$(MY_INCLUDE_DIR) -L$(MY_LIB_DIR)
 
-compile:pre $(MY_LIB) $(MY_BIN) clean
+compile:pre check_dir $(MY_LIB) $(MY_BIN) clean
 	@echo "##cpmple cmlog success"
 
-# load: $(MY_BIN) $(MY_BIN)
-# 	cp -rf $(INCLUDE_DIR) $(INC_SAVE_DIR)
-# 	cp -f $(LIB)* $(LIB_SAVE_DIR)
-# 	cp -f $(BIN)* $(BIN_SAVE_DIR)
 pre:
 	@echo "##start build cmlog"
+
+check_dir:
+	mkdir -p $(MY_COMPLE_DIR)
+	mkdir -p $(MY_INCLUDE_DIR)
+	mkdir -p $(MY_BIN_DIR)
+	mkdir -p $(MY_LIB_DIR)
 
 $(MY_LIB): $(MY_OBJS_LIB)
 	ar rc $@ $^
