@@ -1,22 +1,24 @@
 #当前模块自定义
 CC                   =gcc
-MY_COMPLE_DIR        =./compile/
 MY_INCLUDE_DIR       =./include/
-MY_BIN_DIR           =$(MY_COMPLE_DIR)bin/
-MY_LIB_DIR           =$(MY_COMPLE_DIR)lib/
-MY_BIN               =$(MY_BIN_DIR)cmlog_server
-MY_LIB               =$(MY_LIB_DIR)libcmlog.a
 MY_SRCS_DIR          =./src/
 MY_SRCS_BIN          =$(wildcard $(MY_SRCS_DIR)*.c)	
 MY_SRCS_LIB          =$(wildcard $(MY_SRCS_DIR)include/*.c)	
 MY_OBJS_BIN          =$(MY_SRCS_BIN:.c=.o)
 MY_OBJS_LIB          =$(MY_SRCS_LIB:.c=.o)
 
+#generate compile file
+MY_COMPLE_DIR        =./compile/
+MY_BIN_DIR           =$(MY_COMPLE_DIR)bin/
+MY_LIB_DIR           =$(MY_COMPLE_DIR)lib/
+MY_BIN               =$(MY_BIN_DIR)cmlog_server
+MY_LIB               =$(MY_LIB_DIR)libcmlog.a
+
 #构建外部库定义（build）
-COMPILE              =../../compiles/cmlog/
-INCLUDE              =$(COMPILE)include/
-LIB                  =$(COMPILE)lib/
-BIN                  =$(COMPILE)bin/
+BUILD                =../../build/cmlog/
+INCLUDE              =$(BUILD)include/
+LIB                  =$(BUILD)lib/
+BIN                  =$(BUILD)bin/
 
 #TEST 
 MY_TEST_DIR          =./test/
@@ -52,7 +54,7 @@ $(MY_BIN): $(MY_OBJS_BIN)
 
 #build 由上层Makefile调用，包含编译过程，以及拷贝头文件、静态库到指定目录
 build:compile
-	mkdir -p $(COMPILE)
+	mkdir -p $(BUILD)
 	mkdir -p $(INCLUDE)
 	mkdir -p $(LIB)
 	mkdir -p $(BIN)
@@ -67,11 +69,11 @@ undo:clean_all test_clean
 	@echo "##clean cmlog compile file"
 
 clean:
-	@rm  $(MY_OBJS_LIB) $(MY_OBJS_BIN) -f
+	@rm  $(MY_OBJS_LIB) $(MY_OBJS_BIN) \
+		$(MY_LIB)* $(MY_BIN)* -f
 
-clean_all:clean
-	@rm $(MY_LIB)* $(MY_BIN)* -f
-
-test_clean:
+clean_test:
 	@(cd $(MY_TEST_DIR) && $(MAKE) undo) || exit 1
+
+	
 	
