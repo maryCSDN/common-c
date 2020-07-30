@@ -9,7 +9,7 @@ MY_OBJS_LIB          = $(MY_SRCS_LIB:.c=.o)
 MY_COMPLE_DIR        = ./compile/
 MY_BIN_DIR           = $(MY_COMPLE_DIR)bin/
 MY_LIB_DIR           = $(MY_COMPLE_DIR)lib/
-MY_LIB               = $(MY_LIB_DIR)libcmlist.a
+MY_LIB               = $(MY_LIB_DIR)libcmcontainer.a
 
 #构建外部库定义（build）
 BUILD                = ../../build/cmcontainer/
@@ -28,10 +28,10 @@ CFLAGS               +=-g -Wall -I$(MY_INCLUDE_DIR) -I$(RES_INCLUDE)
 #LDFLAGS              +=-L$(RES_LIB)
 
 compile:pre check_dir $(MY_LIB) $(MY_BIN) clean_obj
-	@echo "***cpmple container success***"
+	@echo "***cpmple cmcontainer success***"
 
 pre:
-	@echo "***compile cmlist***"
+	@echo "***compile cmcontainer***"
 
 check_dir:
 	@mkdir -p $(MY_COMPLE_DIR);
@@ -41,7 +41,7 @@ check_dir:
 
 $(MY_LIB): $(MY_OBJS_LIB)
 	@ar rc $@ $^
-	@echo "***generate cmlist static library***"
+	@echo "***generate cmcontainer static library***"
 
 # .c -> .o 的编译规则
 %.o:%.c

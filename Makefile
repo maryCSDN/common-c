@@ -6,7 +6,7 @@ CM_SDK_DIR      =./SDK/
 
 #把将要编译的sdk添加到CM_SDK_SUB_DIR
 CM_SDK_SUB      +=$(CM_SDK_DIR)cm_log/
-CM_SDK_SUB      +=$(CM_SDK_DIR)cm_list/
+CM_SDK_SUB      +=$(CM_SDK_DIR)cm_container/
 
 build:check_dir
 	@echo "******start build SDK******"
@@ -18,7 +18,7 @@ build:check_dir
 	@echo "******build SDK success******"
 
 check_dir:
-	@mkdir -p $(CM_BUILD_DIR);
+	@mkdir -p $(CM_BUILD_DIR)
 
 # 提交代码前执行make undo (清除编译生成项，只提交源码)
 undo:
