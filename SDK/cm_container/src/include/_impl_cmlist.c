@@ -5,6 +5,13 @@
 
 #include "_cmlistwrap.h"
 
+/* 创建空节点（初始化） */
+static list_node_t *create_empty_node(void);
+/* 创建带数据节点 */
+static list_node_t *create_node(data_t *pdata);
+/* _do系列不需要参数检查，删除头结点 */
+static void delete_head_do(list_t *list);
+
 /*********************************** create **********************************/ 
 list_t *create_list(void)
 {
@@ -22,7 +29,7 @@ list_t *create_list(void)
     return head;
 }
 
-list_node_t *create_empty_node(void)
+static list_node_t *create_empty_node(void)
 {
     list_node_t *node = (list_node_t *)calloc(1, sizeof(list_node_t));
     if (null == node)
@@ -38,7 +45,7 @@ list_node_t *create_empty_node(void)
     return node;
 }
 
-list_node_t *create_node(data_t *pdata)
+static list_node_t *create_node(data_t *pdata)
 {
     if (null == pdata)
     {
@@ -57,19 +64,56 @@ list_node_t *create_node(data_t *pdata)
     return node;
 }
 
-/*********************************** insert **********************************/
-bool insert_front(list_t *plist, data_t *pdata)
+
+/*********************************** destory **********************************/
+void clear_list(list_t *plist, LIST_CALLBACK delete_f delete_cb)
 {
-    if (plist == NULL || pdata == NULL)
+    if (plist == null || plist->_lenght == 0)
     {
-        log_error("The node failed to insert into the linked list @[The parameter cannot be null]");
+        return;
+    }
+
+    list_node_t *pnode = plist->_first;
+    unsigned int len = plist->_lenght;
+    unsigned int i;
+    for (i = 0; i < len; i++)
+    {
+        if (pnode == null)
+        {
+            log_warn("Error clearing the list @[node is null]");
+            return;
+        }
+        pnode = pnode->_next;
+        delete_head_do(plist, delete_cb);
+    }
+}
+
+void destory_list(list_t **pplist, LIST_CALLBACK delete_f delete_cb)
+{
+    if (null == pplist || null == *pplist)
+    {
+        return;
+    }
+
+    clear_list(*pplist);
+    free(*pplist);
+    *pplist = null;
+}
+
+
+/*********************************** insert **********************************/
+bool insert_head(list_t *plist, data_t *pdata)
+{
+    if (plist == null || pdata == null)
+    {
+        log_error("The node failed to insert into the linked list head @[The parameter cannot be null]");
         return false;
     }
 
     list_node_t *pnode = create_node(pdata);
     if (pnode == null)
     {
-        log_error("The node failed to insert into the linked list @[create node failed]");
+        log_error("The node failed to insert into the linked list head @[create node failed]");
         return false;
     }
 
@@ -99,18 +143,18 @@ bool insert_front(list_t *plist, data_t *pdata)
     return true;
 }
 
-bool insert_back(list_t *plist, void *pdata)
+bool insert_tail(list_t *plist, data_t *pdata)
 {
     if (plist == NULL || pdata == NULL)
     {
-        log_error("The node failed to insert into the linked list @[The parameter cannot be null]");
+        log_error("The node failed to insert into the linked list tail @[The parameter cannot be null]");
         return false;
     }
 
     list_node_t *pnode = create_node(pdata);
     if (pnode == null)
     {
-        log_error("The node failed to insert into the linked list @[create node failed]");
+        log_error("The node failed to insert into the linked list tail @[create node failed]");
         return false;
     }
 
@@ -140,80 +184,56 @@ bool insert_back(list_t *plist, void *pdata)
     return true;
 }
 
-// 在第index节点之前插入  index 属于 [1,length]
-bool insert_index_front(list_t *plist, int index, void *data)
+bool insert_front(list_t *plist, int index, void *pdata)
 {
-    return true;
-}
-
-// 在第index节点之后插入  index 属于 [0,length]
-bool insert_index_back(list_t *plist, int index, void *data)
-{
-    return true;
-}
-
-// 从头部插入一个节点
-bool insert_front_node(list_t *plist, list_node_t *pnode)
-{
-    if (plist == NULL || pnode == NULL)
+    if (plist == NULL || pdata == NULL)
     {
+        log_error("The node failed to insert into the linked list @[The parameter cannot be null]");
         return false;
     }
 
-    // 如果此节点是当前链表中已存在的节点, 需要将此节点前后链接
-    if (pnode->_next != null && pnode->_prev != null && pnode->_next != pnode->_prev)
+    if (is_empty_list(plist))
+
+    if (index < 1)
     {
-        pnode->_prev->_next = pnode->_next;
-        pnode->_next->_prev = pnode->_prev;
-        plist->_lenght--;
+        log_warn("");
     }
-
-    if (plist->_first == null && plist->_last == null)
-    {
-        pnode->_next = pnode;
-        pnode->_prev = pnode;
-
-        plist->_first = pnode;
-        plist->_last = pnode;
-
-        plist->_lenght++;
-        return true;
-    }
-    plist->_last->_next = pnode;
-    plist->_first->_prev = pnode;
-
-    pnode->_next = plist->_first;
-    pnode->_prev = plist->_last;
-
-    plist->_first = pnode;
-    plist->_lenght++;
-
     return true;
 }
 
-/*********************************** print ***********************************/
-// 显示链表所有节点的data
-void print_list(list_t *plist, printf_t print_func)
+bool insert_back(list_t *plist, int index, void *data)
 {
-    if (plist == null)
+    return true;
+}
+
+
+/* delete */
+bool delete_head(list_t *plist, LIST_CALLBACK delete_f delete_cb);
+bool delete_tail(list_t *plist, LIST_CALLBACK delete_f delete_cb);
+bool delete_node_by_data(list_t *plist, const data_t *pdata, LIST_CALLBACK delete_f delete_cb);
+bool delete_node_by_index(list_t *plist, const unsigned int index, LIST_CALLBACK delete_f delete_cb);
+
+
+/*********************************** print ***********************************/
+void print_list(list_t *plist, LIST_CALLBACK print_f print_cb)
+{
+    if (plist == null || print_cb == null)
     {
-        log_warn("list is null");
+        log_warn("Failed to print list@[The parameter cannot be null]");
         return;
     }
 
-    if (plist->_lenght < 1)
+    if (is_empty_list(plist))
     {
-        log_info("list not node");
+        log_info("Failed to print list@[empty linked list, no nodes]");
         return;
     }
 
     list_node_t *node = plist->_first;
-    int i = 0;
-    for (; i < plist->_lenght; i++)
+    int i;
+    for (i = 0; i < plist->_lenght; i++)
     {
-        print_function = print_func;
-        print_function(node->_pdata);
-
+        print_cb(node->_pdata);
         node = node->_next;
     }
 }
@@ -297,13 +317,13 @@ void print_list(list_t *plist, printf_t print_func)
 
 
 /********************************* check ***************************************/
-bool is_empty_list(list_t *list)
+bool is_empty_list(list_t *plist)
 {
-    if (list == null)
+    if (plist == null)
     {
         log_error("Error checking linked list for empty@[The parameter cannot be null]");
         exit(1);
     }
 
-    return (list->_lenght == 0);
+    return (plist->_lenght == 0);
 }

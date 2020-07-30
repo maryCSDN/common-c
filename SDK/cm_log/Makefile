@@ -69,6 +69,3 @@ clean: clean_obj
 
 clean_test:
 	@(cd $(MY_TEST_DIR) && $(MAKE) undo) || exit 1
-
-	
-	
