@@ -11,14 +11,11 @@ MY_OBJS_LIB          =$(MY_SRCS_LIB:.c=.o)
 MY_COMPLE_DIR        =./compile/
 MY_BIN_DIR           =$(MY_COMPLE_DIR)bin/
 MY_LIB_DIR           =$(MY_COMPLE_DIR)lib/
-MY_BIN               =$(MY_BIN_DIR)cmlog_server
+MY_BIN               =$(MY_BIN_DIR)cmlog
 MY_LIB               =$(MY_LIB_DIR)libcmlog.a
 
 #构建外部库定义（build）
 BUILD                =../../build/cmlog/
-INCLUDE              =$(BUILD)include/
-LIB                  =$(BUILD)lib/
-BIN                  =$(BUILD)bin/
 
 #TEST 
 MY_TEST_DIR          =./test/
@@ -29,24 +26,24 @@ MY_TEST_DIR          =./test/
 CFLAGS               +=-g -Wall -I$(MY_INCLUDE_DIR)
 
 #compile是单编译入口，可以直接调用
-compile:pre check_dir $(MY_LIB) $(MY_BIN) clean
-	@echo "##compile cmlog success"
+compile:pre check_dir $(MY_LIB) $(MY_BIN) clean_obj
+	@echo "***compile cmlog success***"
 
 pre:
-	@echo "##start compiling cmlog"
+	@echo "***compile cmlog***"
 
 check_dir:
-	mkdir -p $(MY_COMPLE_DIR);
-	mkdir -p $(MY_BIN_DIR);
-	mkdir -p $(MY_LIB_DIR);
+	@mkdir -p $(MY_COMPLE_DIR);
+	@mkdir -p $(MY_BIN_DIR);
+	@mkdir -p $(MY_LIB_DIR);
 
 $(MY_LIB): $(MY_OBJS_LIB)
-	@ar rcvs $@ $^
-	@echo "##generate cmlog static lib"
+	@ar rc $@ $^
+	@echo "***generate cmlog static library***"
 
 $(MY_BIN): $(MY_OBJS_BIN)
 	@$(CC) $(CFLAGS) -o $@ $^ -lwsock32
-	@echo "##generate cmlog server bin"
+	@echo "***generate cmlog server bin***"
 
 # .c -> .o 的编译规则
 %.o:%.c
@@ -54,23 +51,21 @@ $(MY_BIN): $(MY_OBJS_BIN)
 
 #build 由上层Makefile调用，包含编译过程，以及拷贝头文件、静态库到指定目录
 build:compile
-	mkdir -p $(BUILD)
-	mkdir -p $(INCLUDE)
-	mkdir -p $(LIB)
-	mkdir -p $(BIN)
-	cp -rf $(MY_INCLUDE_DIR) $(INCLUDE)
-	cp -rf $(MY_BIN_DIR) $(BIN)
-	cp -rf $(MY_LIB_DIR) $(LIB)
+	@mkdir -p $(BUILD)
+	@cp -rf $(MY_INCLUDE_DIR) $(BUILD)
+	@cp -rf $(MY_BIN_DIR) $(BUILD)
+	@cp -rf $(MY_LIB_DIR) $(BUILD)
 
 
 # 提交代码前执行make undo (清除编译生成项，只提交源码)
 undo: clean clean_test
-	rm -rf $(MY_COMPLE_DIR)
-	@echo "##clean cmlog compile file"
+	@rm -rf $(MY_COMPLE_DIR)
 
-clean:
-	@rm  $(MY_OBJS_LIB) $(MY_OBJS_BIN) \
-		$(MY_LIB)* $(MY_BIN)* -f
+clean_obj:
+	@rm  $(MY_OBJS_LIB) $(MY_OBJS_BIN) -f
+
+clean: clean_obj
+	@rm $(MY_LIB)* $(MY_BIN)* -f
 
 clean_test:
 	@(cd $(MY_TEST_DIR) && $(MAKE) undo) || exit 1

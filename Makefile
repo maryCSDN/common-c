@@ -9,24 +9,26 @@ CM_SDK_SUB      +=$(CM_SDK_DIR)cm_log/
 CM_SDK_SUB      +=$(CM_SDK_DIR)cm_list/
 
 build:check_dir
-	@echo "##build SDK"
+	@echo "******start build SDK******"
 	@list='$(CM_SDK_SUB)'; for SDK in $$list; do\
-		echo "##compile $$SDK";\
+		echo "******build $$SDK******";\
 		(cd $$SDK && $(MAKE) build) || exit 1;\
+		echo "******build $$SDK success******";\
 	done
-	@echo "##build success"
+	@echo "******build SDK success******"
 
 check_dir:
-	mkdir -p $(CM_BUILD_DIR);
+	@mkdir -p $(CM_BUILD_DIR);
 
 # 提交代码前执行make undo (清除编译生成项，只提交源码)
 undo:
-	@echo "##clean all compiles"
+	@echo "******undo SDK build******"
 	@list='$(CM_SDK_SUB)';for SDK in $$list;\
 	do\
-		echo "##clean in $$SDK";\
+		echo "******undo in $$SDK******";\
 		(cd $$SDK && $(MAKE) undo) || exit 1;\
+		echo "******undo $$SDK success******";\
 	done
 	@rm -rf $(CM_BUILD_DIR)
-	@echo "##clean end"
+	@echo "******undo SDK build success******"
 
