@@ -64,7 +64,7 @@ build:compile
 
 
 # 提交代码前执行make undo (清除编译生成项，只提交源码)
-undo:clean_all test_clean
+undo: clean clean_test
 	rm -rf $(MY_COMPLE_DIR)
 	@echo "##clean cmlog compile file"
 
