@@ -28,10 +28,10 @@ CFLAGS               +=-g -Wall -I$(MY_INCLUDE_DIR) -I$(RES_INCLUDE)
 #LDFLAGS              +=-L$(RES_LIB)
 
 compile:pre check_dir $(MY_LIB) $(MY_BIN) clean_obj
-	@echo "***cpmple container success***"
+	@echo "***cpmple cmcontainer success***"
 
 pre:
-	@echo "***compile cmlist***"
+	@echo "***compile cmcontainer***"
 
 check_dir:
 	@mkdir -p $(MY_COMPLE_DIR);
@@ -41,7 +41,7 @@ check_dir:
 
 $(MY_LIB): $(MY_OBJS_LIB)
 	@ar rc $@ $^
-	@echo "***generate cmlist static library***"
+	@echo "***generate cmcontainer static library***"
 
 # .c -> .o 的编译规则
 %.o:%.c
