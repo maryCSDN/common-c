@@ -8,6 +8,14 @@ extern "C"
 {
 #endif
 
+/* 定义数据类型 */
+typedef void data_t;
+/* 打印data的回调函数 */
+typedef void (*print_f)(data_t *);
+/* 删除data的回调函数 */
+typedef void (*delete_f)(data_t *);
+
+
 /* 定义链表节点结构（私有，不允许在外部使用） */
 typedef struct _list_node{
     data_t *_pdata;                 /* 数据类型 */
@@ -18,22 +26,17 @@ typedef struct _list_node{
 
 /* 定义链表头部结构 */
 typedef struct _list_head{
-    int _lenght;                    /* 节点个数 */
-    struct _list_node *_first;      /* 头节点标记 */
-    struct _list_node *_last;       /* 尾节点标记 */
+    int _length;                    /* 节点个数 */
+    struct _list_node *_head;       /* 头节点标记 */
+    struct _list_node *_tail;       /* 尾节点标记 */
 } list_t;
 
-#define null	NULL
+#define null            NULL
 /* 标识回调函数 */
 #define LIST_CALLBACK
 
-/* 定义数据类型 */
-typedef void data_t;
-/* 打印data的回调函数 */
-typedef void (*print_f)(data_t *);
-/* 删除data的回调函数 */
-typedef void (*delete_f)(data_t *);
-
+/* 日志内容*/
+char *g_log_format = "Result:%s - Event:%s - Descript:%s";
 
 /*********************************** create **********************************/ 
 /* 创建一个带头节点的空链表 */
@@ -49,13 +52,13 @@ extern void destory_list(list_t **pplist, LIST_CALLBACK delete_f delete_cb);
 
 /*********************************** insert **********************************/ 
 /* 从头部插入一个数据节点 */
-extern bool insert_head(list_t *plist, const data_t *pdata);
+extern bool insert_head(list_t *plist, data_t *pdata);
 /* 从尾部插入一个数据节点 */
-extern bool insert_tail(list_t *plist, const data_t *pdata);
+extern bool insert_tail(list_t *plist, data_t *pdata);
 /* 在第index节点之前插入  index 属于 [1,length] */
-extern bool insert_front(list_t *plist, const unsigned int index, const data_t *pdata); 
+extern bool insert_front(list_t *plist, const unsigned int index, data_t *pdata); 
 /* 在第index节点之后插入  index 属于 [0,length] */
-extern bool insert_back(list_t *plist, const unsigned int index, const data_t *pdata);
+extern bool insert_back(list_t *plist, const unsigned int index, data_t *pdata);
 
 
 /*********************************** delete **********************************/ 
@@ -64,7 +67,7 @@ extern bool delete_head(list_t *plist, LIST_CALLBACK delete_f delete_cb);
 /* 删除尾部节点 */
 extern bool delete_tail(list_t *plist, LIST_CALLBACK delete_f delete_cb);
 /* 删除node */
-extern bool delete_node_by_data(list_t *plist, const data_t *pdata, LIST_CALLBACK delete_f delete_cb);
+extern bool delete_node_by_data(list_t *plist, data_t *pdata, LIST_CALLBACK delete_f delete_cb);
 /* 删除第index节点 */
 extern bool delete_node_by_index(list_t *plist, const unsigned int index, LIST_CALLBACK delete_f delete_cb);
 

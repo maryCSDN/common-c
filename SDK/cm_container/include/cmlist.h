@@ -11,10 +11,10 @@ void clear_list(list_t *plist, LIST_CALLBACK delete_f delete_cb);
 void destory_list(list_t **pplist, LIST_CALLBACK delete_f delete_cb);
 
 /* insert */
-bool insert_head(list_t *plist, data_t *pdata);
-bool insert_tail(list_t *plist, data_t *pdata);
-bool insert_front(list_t *plist, int index, data_t *pdata); 
-bool insert_back(list_t *plist, int index, data_t *pdata);
+bool insert_head(list_t *plist, data_t* const pdata);
+bool insert_tail(list_t *plist, data_t* const pdata);
+bool insert_front(list_t *plist, const int index, data_t* const pdata); 
+bool insert_back(list_t *plist, const int index, data_t* const pdata);
 
 /* delete */
 bool delete_head(list_t *plist, LIST_CALLBACK delete_f delete_cb);

@@ -34,7 +34,7 @@ extern "C"
 #define     null                        NULL
 /* 日期(yyyy:mm:dd) 时间(HH:MM:SS) 模块 日志级别、代码位置、日志内容、错误码 */
 /* <module> [yyyy-mm-dd HH:MM:SS FILE:FUNCTION:LINE] {LOG_LEVEL} # */
-#define     _LOG_FORMAT                 "<%s> [%04d-%02d-%02d %02d:%02d:%02d %s:%s:%05d] <%s>:%s\n"
+#define     _LOG_FORMAT                 "<%s> [%04d-%02d-%02d %02d:%02d:%02d %s:%s:%05d] <%5s>$ %s\n"
 //#define   LOG_FORMAT                  "[%04d-%02d-%02d %02d:%02d:%02d %s %5s %s:%s:%05d] # %s\n"
 #define     LOG_FORMAT_SIZE             2048
 

@@ -9,7 +9,7 @@ MY_OBJS_LIB          = $(MY_SRCS_LIB:.c=.o)
 MY_COMPLE_DIR        = ./compile/
 MY_BIN_DIR           = $(MY_COMPLE_DIR)bin/
 MY_LIB_DIR           = $(MY_COMPLE_DIR)lib/
-MY_LIB               = $(MY_LIB_DIR)libcmlist.a
+MY_LIB               = $(MY_LIB_DIR)libcmcontainer.a
 
 #构建外部库定义（build）
 BUILD                = ../../build/cmcontainer/
@@ -19,7 +19,7 @@ RES_INCLUDE          = ../cm_log/include/
 #RES_LIB              = ../cm_log/compile/lib/
 
 #TEST 
-MY_TEST_DIR          =./test/
+MY_TEST_DIR          = ./test/
 
 # -I$(INCLUDE_PATH) 引入自定义的头文件
 # -g：生成调试信息
