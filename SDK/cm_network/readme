@@ -7,4 +7,11 @@
 |  └─*.c *.h    // server程序实现   >>bin src
 ├─test          // 测试 （test的编译是独立的，但makefile中必须包含clean方法，用于清除test在编译时期产生的编译文件和目标文件）
 ├─Makefile      // 编译cm_network （必须包含build方法，用于代码提交时清除编译时期产生的编译文件和目标文件）
-└─readme        // 路径规划详解
+└─readme        // 路径规划详解,以及功能涵盖
+
+功能:
+1. 网络ping功能
+2. DNS服务
+3. DHCP服务
+4. 网卡驱动与调用
+5. wlan及wifi
