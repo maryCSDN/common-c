@@ -20,6 +20,7 @@ BUILD                =../../build/cmlog/
 #TEST 
 MY_TEST_DIR          =./test/
 
+# $@:目标文件 $^:全部展示 $<:一个一个一次展示
 # -I$(INCLUDE_PATH) 引入自定义的头文件
 # -g：生成调试信息
 # Wall：输出全部的告警信息
