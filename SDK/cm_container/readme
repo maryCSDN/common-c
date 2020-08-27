@@ -1,10 +1,11 @@
-├─compile       // 编译后文件
-│  ├─bin        // sever可执行程序
-│  └─lib        // 静态库文件
-├─include       // 外部调用接口定义
-├─src           // 源码
-│  └─include    // 外部接口实现     >>lib src
-|  └─*.c *.h    // server程序实现   >>bin src
-├─test          // 测试 （test的编译是独立的，但makefile中必须包含clean方法，用于清除test在编译时期产生的编译文件和目标文件）
-├─Makefile      // 编译cm_list （必须包含build方法，用于代码提交时清除编译时期产生的编译文件和目标文件）
-└─readme        // 路径规划详解
+.
+├─service            # cm_container的模块服务
+│   ├─bin            # cm_container的服务端程序，（命名规则为 [module]_srv）
+│   └─ *             # cm_container的服务端程序，通过调用cm_demo的接口，加上服务处理逻辑的控制程序。 （最后需要被编译成可执行程序）
+├─src                # cm_container模块， 模块属于被调用范畴
+│   ├─include        # cm_container模块的接口
+│   └─ *             # cm_container模块的接口实现、及静态库文件
+├─test
+│   └─ *             # 接口的单元测试 (test属于自测的小模块，但Makefile中必须包含clean方法)
+├─Makefile           # cm_container模块的编译，包含 compile：编译cm_container模块及模块服务的代码， clean：清除cm_container一切编译文件
+└─Readme             # cm_container模块的一般性注释,路径规划详解
