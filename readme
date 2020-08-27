@@ -1,3 +1,27 @@
 ├─build                 // 调用Makefile(make build)编译后生成该目录（外部调用库） 包含子项目include bin lib文件夹
 ├─SDK                   // SDK源码
 └─Makefile              // 编译SDK {build:构建sdk库build，undo:撤销编译过程生成的文件}
+
+build 目录下分为两大块， 一部分是SDK中的模块服务， 一部分是SDK的模块。 模块服务是作为模块的服务程序被调用执行的，对应模块则作为客户端。
+因此build下有两个子目录， module_service 和 module 
+module_service下包含 include 、lib、dll、bin
+module 下包含 include 、lib 、dll
+
+SDK则作为模块的根目录，下级包含各个子模块程序的接口及实现
+单个模块则包含service（可选）、 src (module的接口及实现）以及Makefile编译脚本
+
+
+### 模块编写规则 ###
+例如：cm_demo (作为模块程序的实例)
+├─service            # cm_demo的模块服务
+│   ├─bin            # cm_demo的服务端程序，通过调用include下的接口，加上服务处理逻辑的控制程序。 （最后需要被编译成可执行程序， 命名规则为 [module]_service_ctl）
+│   ├─include        # cm_demo的服务端接口 （常量字符串定义 constant.h + constant.c）
+│   └─ *             # cm_demo的服务端接口的实现
+├─src                # cm_demo模块， 模块属于被调用范畴
+│   ├─include        # cm_demo模块的接口
+│   └─ *             # cm_demo模块的接口实现
+├─test
+│   └─ *             # 接口的单元测试
+├─Makefile           # cm_demo模块的编译，包含 compile：编译cm_demo模块及模块服务的代码， destory：销毁一切编译生成文件， build：由上层调用，将目标文件放到build目录下的对应位置
+└─Readme             # cm_demo模块的一般性注释
+注：若在模块A包含模块B，则通过SDK下的相对路径去调用
