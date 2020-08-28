@@ -1,7 +1,8 @@
 .
-├─build              # 调用Makefile(make build)编译后生成该目录（外部调用库） 包含子项目include bin lib文件夹
+├─build              # 调用Makefile(make build)编译后生成该目录（外部调用库） 包含子项目includes bins libs文件夹
 ├─SDK                # SDK源码
-└─Makefile           # 编译SDK {build:构建sdk库build，clean:清除构建过程生成的文件}
+├─Makefile           # 编译SDK {build:构建sdk库build，clean:清除构建过程生成的文件}
+└─configure.mk       # 编译过程的配置文件
 
 
 ### 模块编写规则（可参考cm_log） ###
@@ -14,14 +15,15 @@ SDK则作为模块的根目录，下级包含各个子模块程序的接口及�
 │   └─ *             # cm_demo的服务端程序，通过调用cm_demo的接口，加上服务处理逻辑的控制程序。 （最后需要被编译成可执行程序）
 ├─src                # cm_demo模块， 模块属于被调用范畴
 │   ├─include        # cm_demo模块的接口 
-│   └─ *             # cm_demo模块的接口实现、其它、及编译后的静态库文件 
+│   └─ *             # cm_demo模块的接口实现、其它脚本
 ├─test
 │   └─ *             # 接口的单元测试 (test属于自测的小模块，但Makefile中必须包含clean方法)
-├─Makefile           # cm_demo模块的编译，包含 compile：编译cm_demo模块及模块服务的代码， clean：清除cm_demo一切编译文件
+├─Makefile           # cm_demo模块的编译，包含build:编译并将目标文件拷贝到对应目录下 compile：编译cm_demo模块及模块服务的代码， clean：清除cm_demo目录下一切编译文件
 └─Readme             # cm_demo模块的一般性注释
 注：
 1. 头文件中函数声明带有简短注释，函数定义必须具有详细说明
-2. 若在模块A包含模块B，则通过SDK下的相对路径去调用
+2. 若在模块A调用模块B，则需要进行完整编译，调用依赖模块的库文件
+3. 配置文件configure.mk中确定了SDK编译的 | 库文件目录-_CMLIBS, 头文件目录-_CMINCLUDES, 可执行程序目录（sdk的服务端）-_CMBINS  （该过程由build完成）
 
 
 ### SDK编译规则
@@ -34,3 +36,44 @@ SDK则作为模块的根目录，下级包含各个子模块程序的接口及�
     >> a. 删除 《SDK构建工程》 根目录
     >> b. 进入SDK子目录，执行各工程下Makefile的clean方法
     
+
+
+# https://www.imooc.com/wenda/detail/584860
+# 区分操作系统 start
+ifeq ($(OS),Windows_NT) 
+    detected_OS := Windows
+else
+    detected_OS := $(shell uname 2>/dev/null || echo Unknown)
+    detected_OS := $(patsubst CYGWIN%,Cygwin,$(detected_OS))
+    detected_OS := $(patsubst MSYS%,MSYS,$(detected_OS))
+    detected_OS := $(patsubst MINGW%,MSYS,$(detected_OS))
+endif
+
+ifeq ($(detected_OS),Windows)
+    CFLAGS += -D WIN32
+endif
+ifeq ($(detected_OS),Darwin)        # Mac OS X
+    CFLAGS += -D OSX
+endif
+ifeq ($(detected_OS),Linux)
+    CFLAGS   +=   -D LINUX
+endif
+ifeq ($(detected_OS),GNU)           # Debian GNU Hurd
+    CFLAGS   +=   -D GNU_HURD
+endif
+ifeq ($(detected_OS),GNU/kFreeBSD)  # Debian kFreeBSD
+    CFLAGS   +=   -D GNU_kFreeBSD
+endif
+ifeq ($(detected_OS),FreeBSD)
+    CFLAGS   +=   -D FreeBSD
+endif
+ifeq ($(detected_OS),NetBSD)
+    CFLAGS   +=   -D NetBSD
+endif
+ifeq ($(detected_OS),DragonFly)
+    CFLAGS   +=   -D DragonFly
+endif
+ifeq ($(detected_OS),Haiku)
+    CFLAGS   +=   -D Haiku
+endif
+# 区分操作系统 end

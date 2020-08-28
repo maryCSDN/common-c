@@ -1,11 +1,11 @@
 .
 ├─service            # cm_log的模块服务
 │   ├─bin            # cm_log的服务端程序，（命名规则为 [module]_srv）
-│   └─ *             # cm_log的服务端程序，通过调用cm_demo的接口，加上服务处理逻辑的控制程序。 （最后需要被编译成可执行程序）
+│   └─ *             # cm_log的服务端程序，通过调用cm_log的接口，加上服务处理逻辑的控制程序。 （最后需要被编译成可执行程序）
 ├─src                # cm_log模块， 模块属于被调用范畴
 │   ├─include        # cm_log模块的接口
-│   └─ *             # cm_log模块的接口实现、及静态库文件
+│   └─ *             # cm_log模块的接口实现
 ├─test
 │   └─ *             # 接口的单元测试 (test属于自测的小模块，但Makefile中必须包含clean方法)
-├─Makefile           # cm_log模块的编译，包含 compile：编译cm_log模块及模块服务的代码， clean：清除cm_log一切编译文件
+├─Makefile           # cm_log模块的编译，包含build:编译并将目标文件拷贝到对应目录下 compile：编译cm_log模块及模块服务的代码， clean：清除cm_log目录下一切编译文件
 └─Readme             # cm_log模块的一般性注释,路径规划详解

@@ -1,6 +1,7 @@
 /* windows system */
 #ifdef _WIN32
 
+#include <windows.h>
 #include "include/cmlog.h"
 
 /* log color */
@@ -10,7 +11,7 @@
 #define COLOR_ERROR                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x04)   /* 红色 */
 
 static const char *g_log_level[LOG_OFF + 1] = {"on", "debug", "info", "warn", "error", "off"};
-static char g_module[LOG_MODULE_SIZE] = {0};
+static char g_module[LOG_MODULE_LIMIT] = {0};
 static level_t g_level = LOG_ON;
 static bool g_init_flag = false;
 static SOCKET g_sock;
@@ -71,7 +72,7 @@ int log_init(const char *module)
         return -1;
     }
 
-    if (strlen(module) > LOG_MODULE_SIZE - 1)
+    if (strlen(module) > LOG_MODULE_LIMIT - 1)
     {
         log_warn("log init failed, module len too long");
         return -1;
@@ -109,12 +110,12 @@ static void _cvlog(level_t level, const char *_file, const char *_func, int _lin
     char log_msg[LOG_FORMAT_SIZE] = {0};
     if (!g_init_flag)
     {
-        sprintf(_format, _LOG_FORMAT, LOG_MODULE_SYSVALUE, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
+        sprintf(_format, DEFAULT_LOG_FORMAT, LOG_MODULE_SYSVALUE, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
             date->tm_hour, date->tm_min, date->tm_sec, _file, _func, _line, g_log_level[level], format);
     }
     else
     {
-        sprintf(_format, _LOG_FORMAT, g_module, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
+        sprintf(_format, DEFAULT_LOG_FORMAT, g_module, date->tm_year + 1900, date->tm_mon + 1, date->tm_mday, 
             date->tm_hour, date->tm_min, date->tm_sec, _file, _func, _line,  g_log_level[level], format);
     }
     

@@ -1,4 +1,4 @@
-#include <cmlog.h>
+#include "../src/include/cmlog.h"
 
 int main()
 {

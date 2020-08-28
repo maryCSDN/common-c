@@ -1,8 +1,8 @@
 .
 ├─src                # cm_timer模块， 模块属于被调用范畴
 │   ├─include        # cm_timer模块的接口
-│   └─ *             # cm_timer模块的接口实现、及静态库文件
+│   └─ *             # cm_timer模块的接口实现
 ├─test
 │   └─ *             # 接口的单元测试 (test属于自测的小模块，但Makefile中必须包含clean方法)
-├─Makefile           # cm_timer模块的编译，包含 compile：编译cm_timer模块及模块服务的代码， clean：清除cm_timer一切编译文件
+├─Makefile           # cm_timer模块的编译，包含build:编译并将目标文件拷贝到对应目录下 compile：编译cm_timer模块及模块服务的代码， clean：清除cm_timer目录下一切编译文件
 └─Readme             # cm_timer模块的一般性注释,路径规划详解
