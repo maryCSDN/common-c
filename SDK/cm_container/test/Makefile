@@ -1,24 +1,20 @@
-CC              = gcc
-INCLUDE         =../include/
-LIB             =../compile/lib/
-SRCS            =$(wildcard ./*.c)	
+CC              =gcc
+SRCS            =$(wildcard ./*.c)
 OBJS            =$(SRCS:.c=.o)
-EXE             =test
+BIN             =test
 
-RES_INCLUDE     =../../cm_log/include/
-RES_LIB         =../../cm_log/compile/lib/
 
-CFLAGS          +=-g -Wall -I$(INCLUDE) -I$(RES_INCLUDE)
-LDFLAGS         +=-L$(LIB) -L$(RES_LIB)
+LINK            =../../../build
+CFLAGS          +=-g -Wall -I$(LINK)/includes
+LDFLAGS         +=-L$(LINK)/libs
 
-compile: undo $(EXE)
+compile: clean $(BIN)
 
-$(EXE): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog -lwsock32 -lcmlist
-
+$(BIN): $(OBJS) $(LINK_OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ -lcmlog
 # .c -> .o 的编译规则
 %.o:%.c
-	@$(CC) $(CFLAGS) -c $< -o $@ 
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
-undo:
-	@rm $(OBJS) $(EXE)* -f
+clean:
+	@rm $(OBJS) $(BIN) -f
